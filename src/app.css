@@ -1,0 +1,592 @@
+/* src/app.css */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+main {
+  /* This gradient is for the auth pages background */
+  background-image: linear-gradient(to bottom right, #111827, #4c1d95, #111827);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* Re-added these to center the auth/chat window */
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 28rem;
+  background-color: rgba(31, 41, 55, 0.5);
+  backdrop-filter: blur(4px);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(168, 85, 247, 0.1);
+}
+
+.auth-title {
+  font-size: 30px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: #9ca3af;
+  margin-bottom: 2rem;
+  font-size: 18px;
+}
+
+.auth-footer-text {
+  text-align: center;
+  color: #9ca3af;
+  margin-top: 1.5rem;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group:last-child {
+  margin-bottom: 1.5rem;
+}
+.form-group label {
+  display: block;
+  color: #d1d5db;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem 1rem;
+  background-color: rgba(55, 65, 81, 0.5);
+  border: 1px solid #4b5563;
+  border-radius: 0.5rem;
+  transition: all 150ms ease-in-out;
+  color: white;
+}
+
+.form-input::placeholder {
+  color: #6b7280;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #a855f7;
+  box-shadow: 0 0 0 2px #a855f7;
+}
+.form-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn {
+  border: none;
+  cursor: pointer;
+  font-family: sans-serif;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* --- THEME: Main Button Purple --- */
+.btn-primary {
+  background-color: #7c3aed;
+  color: white;
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: large;
+  transition: transform 150ms ease-in-out, background-color 150ms ease-in-out;
+}
+.btn-primary.btn-full {
+    width: 50%;
+    margin-left: 25%;
+}
+.btn-primary:not(:disabled):hover {
+  background-color: #9333ea; /* Lighter purple on hover */
+  transform: scale(1.02);
+}
+
+/* --- THEME: Link Button Purple --- */
+.btn-link {
+  background: none;
+  color: #e9d5ff; /* Light purple link */
+}
+.btn-link:hover {
+  color: #d8b4fe;
+  text-decoration: underline;
+}
+
+.onboarding-container {
+  width: 100%;
+  max-width: 48rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(31, 41, 55, 0.5);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.onboarding-step h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.passions-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+.passion-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 150ms ease-in-out;
+  background-color: #374151;
+  color: #d1d5db;
+  border: none;
+  cursor: pointer;
+}
+.passion-btn:not(.selected):hover {
+  background-color: #4b5563;
+}
+.passion-btn.selected {
+  background-color: #9333ea;
+  color: white;
+}
+
+.btn-onboarding-next {
+  margin-top: 2.5rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+  font-size: 1.125rem;
+  width: auto;
+}
+
+/* --- THEME: Error Message Color --- */
+.error-message {
+  color: #f87171; /* Red for errors */
+  text-align: center;
+  margin-bottom: 1rem;
+  margin-top: -0.5rem;
+  font-size: 0.9rem;
+}
+  
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.typing-indicator .dot {
+  width: 8px;
+  height: 8px;
+  background-color: white; /* --- THEME: Changed to white --- */
+  border-radius: 50%;
+  animation: typing-bounce 1.2s infinite ease-in-out;
+}
+
+.typing-indicator .dot:nth-child(2) {
+  animation-delay: -1.0s;
+}
+
+.typing-indicator .dot:nth-child(3) {
+  animation-delay: -0.8s;
+}
+
+@keyframes typing-bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  } 40% {
+    transform: scale(1.0);
+  }
+}
+
+/* --- CHAT LAYOUT STYLES (REVERTED) --- */
+
+/* This is the original .chat-window style */
+.chat-window {
+  width: 100%;
+  height: 90vh;
+  max-width: 48rem;
+  display: flex;
+  flex-direction: column;
+  /* --- THEME: Purple Gradient Background --- */
+  background-image: linear-gradient(to bottom right, #3f0980, #5b21b6, #3f0980);
+  backdrop-filter: blur(4px);
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(168, 85, 247, 0.2);
+  overflow: hidden;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  /* --- THEME: Transparent background --- */
+  background-color: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.friend-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.friend-info h3 {
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin: 0;
+}
+.header-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  object-fit: cover;
+  /* --- THEME: Light purple border --- */
+  border: 2px solid #a78bfa; 
+}
+
+/* --- ADDED BACK: Header Menu Styles --- */
+.menu-btn {
+  padding: 0.5rem;
+  border-radius: 9999px;
+  transition: background-color 150ms ease-in-out;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #e9d5ff; /* Light purple icon */
+}
+.menu-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.header-menu-container {
+  position: relative;
+}
+.header-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #4c1d95; /* Dark purple */
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  z-index: 20;
+  width: 150px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  border: 1px solid #7c3aed;
+}
+.menu-item {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: #e9d5ff; /* Light purple text */
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+.menu-item:hover {
+  background-color: #5b21b6; /* Medium purple */
+}
+/* --- END: Header Menu Styles --- */
+
+
+.messages-area {
+  flex-grow: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.message-container {
+  display: flex;
+  position: relative;
+}
+.message-container.user {
+  justify-content: flex-end;
+}
+
+.message-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.user .message-wrapper {
+  flex-direction: row-reverse;
+}
+
+.message-bubble {
+  max-width: 80%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  word-wrap: break-word;
+  position: relative;
+}
+/* --- THEME: A slightly darker purple for AI --- */
+.message-bubble.ai {
+  background-color: #5b21b6; 
+  color: white;
+  border-bottom-left-radius: 0.5rem;
+}
+/* --- THEME: A brighter purple for user --- */
+.message-bubble.user {
+  background-color: #7c3aed; 
+  color: white;
+  border-bottom-right-radius: 0.5rem;
+}
+.message-bubble p {
+  margin: 0;
+}
+
+.chat-footer {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  transition: padding-top 0.2s ease-in-out;
+  background-color: transparent; /* Show gradient */
+}
+
+/* --- NEW CHAT FOOTER STYLES (to match image_90d9e3.png) --- */
+
+.message-form {
+  /* Form itself just holds the wrapper */
+  display: flex;
+  width: 100%;
+}
+
+/* This is the new container that looks like a big input field */
+.chat-input-wrapper {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  padding: 0.5rem 0.75rem; /* Padding inside the wrapper */
+  background-color: #4c1d95; /* Same as old input bg */
+  border-radius: 1.25rem; /* Large rounded corners */
+  border: 1px solid #7c3aed; /* Same as old border */
+  gap: 0.5rem; /* Space between icons and input */
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.chat-input-wrapper:focus-within {
+  border-color: #a855f7;
+  box-shadow: 0 0 0 2px #a855f7;
+}
+
+/* This is the new <input> style */
+.chat-input {
+  flex-grow: 1;
+  background-color: transparent; /* Input is transparent */
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 1rem;
+  padding: 0.25rem; /* Minimal padding */
+}
+.chat-input::placeholder {
+  color: #e9d5ff; /* Lighter placeholder text */
+}
+.chat-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* This styles all icon buttons: +, mic, send */
+.input-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  color: #e9d5ff; /* Light purple icons */
+  padding: 0.5rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+  flex-shrink: 0; /* Prevents icons from shrinking */
+}
+.input-icon-btn:hover:not(:disabled) {
+  background-color: #5b21b6; /* Medium purple on hover */
+}
+.input-icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Specific style for the send button */
+.send-btn {
+  background-color: #7c3aed; /* Bright purple bg */
+  color: white;
+}
+.send-btn:hover:not(:disabled) {
+  background-color: #9333ea;
+}
+.send-btn:disabled {
+  background-color: #5b21b6; /* Dull purple when disabled */
+  opacity: 0.7;
+  color: #a78bfa;
+}
+
+/* --- END OF NEW FOOTER STYLES --- */
+
+
+.reaction-controls {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* --- THEME: Reaction Button Styles --- */
+.add-reaction-btn {
+  background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
+  border-radius: 9999px;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out, background-color 150ms ease-in-out;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.message-wrapper:hover .add-reaction-btn {
+  opacity: 1;
+}
+.add-reaction-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.add-reaction-btn svg {
+  color: white;
+}
+
+
+/* --- THEME: Reaction Palette --- */
+.reaction-palette {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 0.5rem;
+  background-color: #5b21b6; /* Medium purple */
+  padding: 0.5rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  display: flex;
+  gap: 0.25rem;
+  z-index: 10;
+  border: 1px solid #7c3aed;
+}
+.user .reaction-palette {
+  right: 0;
+}
+.ai .reaction-palette {
+  left: 0;
+}
+
+.reaction-palette button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0.25rem;
+  transition: transform 100ms ease-in-out;
+}
+.reaction-palette button:hover {
+  transform: scale(1.2);
+}
+
+.displayed-reaction {
+  position: absolute;
+  bottom: -0.75rem;
+  right: 0.5rem;
+  background-color: #4b5563;
+  border: 2px solid #1f2937;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.3rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* --- THEME: Reply Preview --- */
+.reply-preview {
+    background-color: #4c1d95; /* Darker purple for reply preview */
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.75rem;
+    border-left: 3px solid #a855f7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.reply-preview p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #e9d5ff; /* Lighter text */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+.reply-preview strong {
+    font-weight: 600;
+    color: #e9d5ff; /* Lighter text */
+}
+.cancel-reply-btn {
+    background: none;
+    border: none;
+    color: #e9d5ff;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+.quoted-reply {
+    background-color: rgba(0,0,0,0.2);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-left: 2px solid #a855f7;
+}
+.quoted-reply strong {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #d8b4fe;
+}
+.quoted-reply p {
+    font-size: 0.875rem;
+    color: #d1d5db;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+}
