@@ -85,7 +85,6 @@
     }
   }
 
-  // --- Navigation Handlers ---
 
   function navigate(event) {
     currentPage = event.detail;

@@ -1,6 +1,6 @@
 <script>
   import { onMount, tick, createEventDispatcher } from 'svelte';
-  import { availableReactions } from '$lib/constants/reactions.js'; // Import constants
+  import { availableReactions } from '$lib/constants/reactions.js'; 
 
   export let friendName;
   export let friendAvatar;
@@ -105,9 +105,9 @@
     }
   }
 
-  // --- ADDED BACK ---
+  
   function clearChat() {
-    messages = [initialWelcomeMessage]; // Reset to welcome message
+    messages = [initialWelcomeMessage];
     isMenuOpen = false;
   }
 
@@ -115,7 +115,7 @@
     isMenuOpen = false;
     dispatch('logout');
   }
-  // --- END ADDED BACK ---
+  
 
   function startReply(message) {
     replyingToMessage = message;

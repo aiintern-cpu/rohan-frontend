@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
-  import { passions as allPassions } from '$lib/constants/passions.js'; // Import constants
+  import { passions as allPassions } from '$lib/constants/passions.js'; 
 
   export let selectedPassions = [];
   export let isLoading = false;
@@ -15,7 +15,7 @@
     } else {
       selectedPassions.push(passion);
     }
-    selectedPassions = selectedPassions; // Trigger Svelte reactivity
+    selectedPassions = selectedPassions; 
   }
 
   const handleComplete = () => dispatch('complete');

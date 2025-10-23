@@ -1,17 +1,14 @@
-/* src/app.css */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
 }
 
 main {
-  /* This gradient is for the auth pages background */
   background-image: linear-gradient(to bottom right, #111827, #4c1d95, #111827);
   color: white;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  /* Re-added these to center the auth/chat window */
   align-items: center;
   justify-content: center;
   padding: 1rem;
@@ -109,7 +106,6 @@ main {
   cursor: not-allowed;
 }
 
-/* --- THEME: Main Button Purple --- */
 .btn-primary {
   background-color: #7c3aed;
   color: white;
@@ -124,14 +120,13 @@ main {
     margin-left: 25%;
 }
 .btn-primary:not(:disabled):hover {
-  background-color: #9333ea; /* Lighter purple on hover */
+  background-color: #9333ea;
   transform: scale(1.02);
 }
 
-/* --- THEME: Link Button Purple --- */
 .btn-link {
   background: none;
-  color: #e9d5ff; /* Light purple link */
+  color: #e9d5ff; 
 }
 .btn-link:hover {
   color: #d8b4fe;
@@ -189,9 +184,8 @@ main {
   width: auto;
 }
 
-/* --- THEME: Error Message Color --- */
 .error-message {
-  color: #f87171; /* Red for errors */
+  color: #f87171;
   text-align: center;
   margin-bottom: 1rem;
   margin-top: -0.5rem;
@@ -207,7 +201,7 @@ main {
 .typing-indicator .dot {
   width: 8px;
   height: 8px;
-  background-color: white; /* --- THEME: Changed to white --- */
+  background-color: white;
   border-radius: 50%;
   animation: typing-bounce 1.2s infinite ease-in-out;
 }
@@ -228,16 +222,12 @@ main {
   }
 }
 
-/* --- CHAT LAYOUT STYLES (REVERTED) --- */
-
-/* This is the original .chat-window style */
 .chat-window {
   width: 100%;
   height: 90vh;
   max-width: 48rem;
   display: flex;
   flex-direction: column;
-  /* --- THEME: Purple Gradient Background --- */
   background-image: linear-gradient(to bottom right, #3f0980, #5b21b6, #3f0980);
   backdrop-filter: blur(4px);
   border-radius: 1rem;
@@ -250,7 +240,6 @@ main {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  /* --- THEME: Transparent background --- */
   background-color: transparent;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -270,11 +259,9 @@ main {
   height: 2.5rem;
   border-radius: 9999px;
   object-fit: cover;
-  /* --- THEME: Light purple border --- */
   border: 2px solid #a78bfa; 
 }
 
-/* --- ADDED BACK: Header Menu Styles --- */
 .menu-btn {
   padding: 0.5rem;
   border-radius: 9999px;
@@ -282,7 +269,7 @@ main {
   background: none;
   border: none;
   cursor: pointer;
-  color: #e9d5ff; /* Light purple icon */
+  color: #e9d5ff; 
 }
 .menu-btn:hover {
   background-color: rgba(255, 255, 255, 0.1);
@@ -294,7 +281,7 @@ main {
   position: absolute;
   top: 100%;
   right: 0;
-  background-color: #4c1d95; /* Dark purple */
+  background-color: #4c1d95;
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px rgba(0,0,0,0.2);
   z-index: 20;
@@ -309,16 +296,14 @@ main {
   padding: 0.75rem 1rem;
   background: none;
   border: none;
-  color: #e9d5ff; /* Light purple text */
+  color: #e9d5ff; 
   text-align: left;
   cursor: pointer;
   font-size: 0.875rem;
 }
 .menu-item:hover {
-  background-color: #5b21b6; /* Medium purple */
+  background-color: #5b21b6; 
 }
-/* --- END: Header Menu Styles --- */
-
 
 .messages-area {
   flex-grow: 1;
@@ -353,13 +338,11 @@ main {
   word-wrap: break-word;
   position: relative;
 }
-/* --- THEME: A slightly darker purple for AI --- */
 .message-bubble.ai {
   background-color: #5b21b6; 
   color: white;
   border-bottom-left-radius: 0.5rem;
 }
-/* --- THEME: A brighter purple for user --- */
 .message-bubble.user {
   background-color: #7c3aed; 
   color: white;
@@ -373,27 +356,23 @@ main {
   padding: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   transition: padding-top 0.2s ease-in-out;
-  background-color: transparent; /* Show gradient */
+  background-color: transparent; 
 }
 
-/* --- NEW CHAT FOOTER STYLES (to match image_90d9e3.png) --- */
-
 .message-form {
-  /* Form itself just holds the wrapper */
   display: flex;
   width: 100%;
 }
 
-/* This is the new container that looks like a big input field */
 .chat-input-wrapper {
   display: flex;
   align-items: center;
   flex-grow: 1;
-  padding: 0.5rem 0.75rem; /* Padding inside the wrapper */
-  background-color: #4c1d95; /* Same as old input bg */
-  border-radius: 1.25rem; /* Large rounded corners */
-  border: 1px solid #7c3aed; /* Same as old border */
-  gap: 0.5rem; /* Space between icons and input */
+  padding: 0.5rem 0.75rem; 
+  background-color: #4c1d95; 
+  border-radius: 1.25rem; 
+  border: 1px solid #7c3aed; 
+  gap: 0.5rem; 
   transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 .chat-input-wrapper:focus-within {
@@ -401,61 +380,55 @@ main {
   box-shadow: 0 0 0 2px #a855f7;
 }
 
-/* This is the new <input> style */
 .chat-input {
   flex-grow: 1;
-  background-color: transparent; /* Input is transparent */
+  background-color: transparent; 
   border: none;
   outline: none;
   color: white;
   font-size: 1rem;
-  padding: 0.25rem; /* Minimal padding */
 }
 .chat-input::placeholder {
-  color: #e9d5ff; /* Lighter placeholder text */
+  color: #e9d5ff; 
 }
 .chat-input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* This styles all icon buttons: +, mic, send */
 .input-icon-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: transparent;
   border: none;
-  color: #e9d5ff; /* Light purple icons */
+  color: #e9d5ff; 
   padding: 0.5rem;
   border-radius: 9999px;
   cursor: pointer;
   transition: background-color 150ms ease, color 150ms ease;
-  flex-shrink: 0; /* Prevents icons from shrinking */
+  flex-shrink: 0; 
 }
 .input-icon-btn:hover:not(:disabled) {
-  background-color: #5b21b6; /* Medium purple on hover */
+  background-color: #5b21b6; 
 }
 .input-icon-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-/* Specific style for the send button */
 .send-btn {
-  background-color: #7c3aed; /* Bright purple bg */
+  background-color: #7c3aed; 
   color: white;
 }
 .send-btn:hover:not(:disabled) {
   background-color: #9333ea;
 }
 .send-btn:disabled {
-  background-color: #5b21b6; /* Dull purple when disabled */
+  background-color: #5b21b6; 
   opacity: 0.7;
   color: #a78bfa;
 }
-
-/* --- END OF NEW FOOTER STYLES --- */
 
 
 .reaction-controls {
@@ -465,9 +438,8 @@ main {
   gap: 0.25rem;
 }
 
-/* --- THEME: Reaction Button Styles --- */
 .add-reaction-btn {
-  background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+  background-color: rgba(255, 255, 255, 0.1); 
   border: none;
   cursor: pointer;
   font-size: 1rem;
@@ -491,12 +463,11 @@ main {
 }
 
 
-/* --- THEME: Reaction Palette --- */
 .reaction-palette {
   position: absolute;
   bottom: 100%;
   margin-bottom: 0.5rem;
-  background-color: #5b21b6; /* Medium purple */
+  background-color: #5b21b6; 
   padding: 0.5rem;
   border-radius: 9999px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.2);
@@ -536,9 +507,8 @@ main {
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* --- THEME: Reply Preview --- */
 .reply-preview {
-    background-color: #4c1d95; /* Darker purple for reply preview */
+    background-color: #4c1d95; 
     padding: 0.75rem;
     margin-bottom: 0.75rem;
     border-radius: 0.75rem;
@@ -550,7 +520,7 @@ main {
 .reply-preview p {
     margin: 0;
     font-size: 0.875rem;
-    color: #e9d5ff; /* Lighter text */
+    color: #e9d5ff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -558,7 +528,7 @@ main {
 }
 .reply-preview strong {
     font-weight: 600;
-    color: #e9d5ff; /* Lighter text */
+    color: #e9d5ff;
 }
 .cancel-reply-btn {
     background: none;
