@@ -1,45 +1,66 @@
 <script>
   import { onMount, tick, createEventDispatcher } from 'svelte';
-  import { availableReactions } from '$lib/constants/reactions.js'; 
+  import { availableReactions } from '$lib/constants/reactions.js';
 
   export let friendName;
   export let friendAvatar;
   export let username;
   export let apiBaseUrl;
-  export let initialWelcomeMessage;
-
+  
+  export let initialHistory = [];
+  export let initialWelcomeMessage = {};
+  
   const dispatch = createEventDispatcher();
 
+  let messages = []; 
   let isAiTyping = false;
-  let messages = [];
   let newMessage = '';
-  let chatContainer;
   let reactionPaletteOpenFor = null;
   let replyingToMessage = null;
-  
   let isMenuOpen = false;
-
-  $: if (initialWelcomeMessage && messages[0] !== initialWelcomeMessage) {
-    messages = [initialWelcomeMessage];
-  }
+  let chatContainerEl;
 
   onMount(() => {
-    if (!messages.length && initialWelcomeMessage) {
-      messages = [initialWelcomeMessage];
-    }
+    messages = formatHistory(initialHistory);
+    messages.push(initialWelcomeMessage);
+    scrollBottom();
   });
 
   async function scrollBottom() {
     await tick();
-    if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+    if (chatContainerEl) chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
   }
 
+  function formatHistory(backendHistory = []) {
+    let formattedMessages = [];
+    backendHistory.forEach((convo, index) => {
+      if (convo.user) {
+        formattedMessages.push({
+          id: `hist_${index}_user`,
+          text: convo.user,
+          sender: 'user', 
+          reaction: null 
+        });
+      }
+      if (convo.rohan) {
+        formattedMessages.push({
+          id: `hist_${index}_ai`,
+          text: convo.rohan,
+          sender: 'ai', 
+          reaction: null 
+        });
+      }
+    });
+    
+    return formattedMessages;
+  }
   async function sendMessage() {
     if (newMessage.trim() === '' || isAiTyping) return;
 
     const userMessageText = newMessage;
-    const userMessage = {
-      id: messages.length + 1,
+    
+    const tempUserMessage = {
+      id: `temp_${Date.now()}`,
       text: userMessageText,
       sender: 'user',
       reaction: null,
@@ -48,12 +69,12 @@
         sender: replyingToMessage.sender === 'ai' ? friendName : 'You'
       } : null
     };
-    messages = [...messages, userMessage];
+    messages = [...messages, tempUserMessage];
+    
     newMessage = '';
     replyingToMessage = null;
     isAiTyping = true; 
-
-    scrollBottom(); 
+    scrollBottom();
 
     try {
       const response = await fetch(`${apiBaseUrl}/chat`, {
@@ -67,25 +88,21 @@
 
       if (response.ok) {
         const aiData = await response.json();
-        const aiReplyText = aiData.reply;
-
-        const wordCount = aiReplyText.split(' ').length;
-        const typingSpeedMsPerWord = 100;
-        const minDelay = 500;
-        const calculatedDelay = Math.max(minDelay, wordCount * typingSpeedMsPerWord);
+        let formattedMessages = formatHistory(aiData.recent_conversations);
+        const newReplyText = aiData.reply;
+        const lastHistoryMessage = formattedMessages.length > 0 
+          ? formattedMessages[formattedMessages.length - 1].text 
+          : null;
+        if (newReplyText !== lastHistoryMessage) {
+          formattedMessages.push({
+            id: `ai_${Date.now()}`,
+            text: newReplyText,
+            sender: 'ai',
+            reaction: null
+          });
+        }
         
-        const aiResponse = {
-          id: messages.length + 1,
-          text: aiReplyText,
-          sender: 'ai',
-          reaction: null
-        };
-        
-        setTimeout(() => {
-          messages = [...messages, aiResponse];
-          isAiTyping = false;
-          scrollBottom();
-        }, calculatedDelay);
+        messages = formattedMessages;
 
       } else {
         const errorData = await response.json();
@@ -94,28 +111,27 @@
     } catch (error) {
       console.error('Chat error:', error);
       const errorResponse = {
-        id: messages.length + 1,
+        id: `err_${Date.now()}`,
         text: `Sorry, an error occurred: ${error.message}`,
         sender: 'ai',
         reaction: null
       };
       messages = [...messages, errorResponse];
+    } finally {
       isAiTyping = false;
       scrollBottom();
     }
   }
 
-  
-  function clearChat() {
-    messages = [initialWelcomeMessage];
+  function handleDeleteChat() {
     isMenuOpen = false;
+    dispatch('deleteChat'); 
   }
 
   function handleLogout() {
     isMenuOpen = false;
     dispatch('logout');
   }
-  
 
   function startReply(message) {
     replyingToMessage = message;
@@ -157,13 +173,14 @@
       {#if isMenuOpen}
         <div class="header-menu">
           <button class="menu-item" on:click={handleLogout}>Logout</button>
-          <button class="menu-item" on:click={clearChat}>Delete Chat</button>
+          <button class="menu-item" on:click={handleDeleteChat}>Delete Chat</button>
         </div>
       {/if}
     </div>
-    </header>
+  </header>
 
-  <div bind:this={chatContainer} class="messages-area">
+  <div class="messages-area" bind:this={chatContainerEl}>
+    
     {#each messages as message (message.id)}
       <div class="message-container" class:user={message.sender === 'user'}>
         <div class="message-wrapper">
@@ -223,20 +240,18 @@
     
     <form on:submit|preventDefault={sendMessage} class="message-form">
       <div class="chat-input-wrapper">
-        
         <input 
           type="text" 
           bind:value={newMessage} 
-          placeholder="Type your message" 
+          placeholder="Ask anything" 
           class="chat-input" 
           disabled={isAiTyping}
           on:keydown={(e) => { if(e.key === 'Enter' && !e.shiftKey) { sendMessage(); e.preventDefault(); }}}
         >
-        
         <button type="submit" class="input-icon-btn send-btn" disabled={isAiTyping || newMessage.trim() === ''}>
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
         </button>
       </div>
     </form>
-    </footer>
+  </footer>
 </div>

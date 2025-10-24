@@ -12,6 +12,9 @@
   let authError = '';
   let loggedInUsername = '';
 
+  let chatKey = Date.now();
+  const chatHistoryKey = (user) => `chatHistory_${user}`;
+
   let loginDetails = { username: '', password: '' };
   let signupDetails = { username: '', email: '', password: '' };
   let userDetails = { nickname: '', age: '', designation: '', location: '' };
@@ -22,6 +25,8 @@
     passions: []
   };
   
+  // We will store the history here to pass as a prop
+  let initialHistory = [];
   let initialWelcomeMessage = {};
 
   async function handleLogin() {
@@ -36,31 +41,38 @@
 
       if (response.ok) {
         loggedInUsername = loginDetails.username;
-        startChat();
+        // Don't call startChat() directly
+        await loadHistoryAndStartChat();
       } else {
         const errorData = await response.json();
-        authError = errorData.detail || 'Invalid username or password.';
+        if (typeof errorData.detail === 'string') {
+          authError = errorData.detail;
+        } else {
+          authError = 'Invalid username or password.';
+        }
+        isLoading = false; // Stop loading on error
       }
     } catch (error) {
       console.error('Login failed:', error);
       authError = 'Could not connect to the server. Please try again.';
-    } finally {
-      isLoading = false;
+      isLoading = false; // Stop loading on error
     }
   }
 
   async function completeOnboarding() {
     isLoading = true;
     authError = '';
+    
+    // This payload is fixed to match your backend
     const onboardingPayload = {
       username: signupDetails.username,
-      gmail: signupDetails.email,
+      email: signupDetails.email, 
       password: signupDetails.password,
       nickname: userDetails.nickname,
       age: parseInt(userDetails.age, 10),
       designation: userDetails.designation,
       location: userDetails.location,
-      interests: aiFriend.passions
+      likes: aiFriend.passions 
     };
 
     try {
@@ -72,19 +84,67 @@
 
       if (response.ok) {
         loggedInUsername = signupDetails.username;
-        startChat();
+        // Don't call startChat() directly
+        await loadHistoryAndStartChat();
       } else {
         const errorData = await response.json();
-        authError = errorData.detail || 'Failed to create account.';
+        // This fixes [object Object]
+        if (typeof errorData.detail === 'string') {
+          authError = errorData.detail;
+        } else if (Array.isArray(errorData.detail) && errorData.detail[0] && errorData.detail[0].msg) {
+          authError = `Error: ${errorData.detail[0].msg}`;
+        } else {
+          authError = 'Failed to create account. Please check details.';
+        }
+        isLoading = false; // Stop loading on error
       }
     } catch (error) {
       console.error('Onboarding failed:', error);
       authError = 'Could not connect to the server.';
-    } finally {
-      isLoading = false;
+      isLoading = false; // Stop loading on error
     }
   }
 
+  // This function loads history *before* changing the page
+  async function loadHistoryAndStartChat() {
+    // Show a loading message on the *current* page
+    authError = 'Loading chat history...';
+    isLoading = true;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: loggedInUsername,
+          message: "" // Send empty message to get history
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch history');
+      
+      const aiData = await response.json();
+
+      // Store the history and welcome message
+      initialHistory = aiData.recent_conversations || [];
+      initialWelcomeMessage = {
+        id: 'init_reply',
+        text: aiData.reply || aiData.message || "Welcome back!", // Reads both "reply" and "message"
+        sender: 'ai',
+        reaction: null
+      };
+
+      // NOW we switch pages
+      startChat();
+
+    } catch (error) {
+      console.error('History load failed:', error);
+      authError = 'Could not load your chat history. Please try again.';
+    } finally {
+      isLoading = false; // Stop loading
+      authError = ''; // Clear "Loading..." message
+    }
+  }
 
   function navigate(event) {
     currentPage = event.detail;
@@ -101,12 +161,7 @@
 
   function startChat() {
     currentPage = 'chat';
-    initialWelcomeMessage = {
-      id: 1,
-      text: `Hello there! It's so nice to meet you. My name is ${aiFriend.name}. What's on your mind?`,
-      sender: 'ai',
-      reaction: null
-    };
+    chatKey = Date.now(); // Update key to force remount
   }
 
   function handleLogout() {
@@ -116,19 +171,28 @@
     signupDetails = { username: '', email: '', password: '' };
     userDetails = { nickname: '', age: '', designation: '', location: '' };
     aiFriend.passions = [];
+    initialHistory = []; // Clear history on logout
+    initialWelcomeMessage = {};
   }
+
+  function handleChatReset() {
+    // You need a backend endpoint to clear history
+    // For now, this just re-mounts the window
+    chatKey = Date.now();
+  }
+
 </script>
 
 <main>
-
   {#if currentPage === 'chat'}
     <ChatWindow
+      key={chatKey}
+      username={loggedInUsername}
       friendName={aiFriend.name}
       friendAvatar={aiFriend.avatar}
-      username={loggedInUsername}
       apiBaseUrl={API_BASE_URL}
-      {initialWelcomeMessage}
-      on:logout={handleLogout}
+      initialHistory={initialHistory} initialWelcomeMessage={initialWelcomeMessage} on:logout={handleLogout}
+      on:deleteChat={handleChatReset}
     />
   {:else}
     {#if currentPage === 'login'}
