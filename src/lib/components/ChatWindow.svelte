@@ -22,7 +22,10 @@
 
   onMount(() => {
     messages = formatHistory(initialHistory);
-    messages.push(initialWelcomeMessage);
+    if (initialWelcomeMessage) {
+      messages.push(initialWelcomeMessage);
+    }
+    
     scrollBottom();
   });
 
@@ -243,7 +246,7 @@
         <input 
           type="text" 
           bind:value={newMessage} 
-          placeholder="Ask anything" 
+          placeholder="Tell me something" 
           class="chat-input" 
           disabled={isAiTyping}
           on:keydown={(e) => { if(e.key === 'Enter' && !e.shiftKey) { sendMessage(); e.preventDefault(); }}}

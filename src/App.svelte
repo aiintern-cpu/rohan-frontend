@@ -63,7 +63,6 @@
     isLoading = true;
     authError = '';
     
-    // This payload is fixed to match your backend
     const onboardingPayload = {
       username: signupDetails.username,
       email: signupDetails.email, 
@@ -88,7 +87,6 @@
         await loadHistoryAndStartChat();
       } else {
         const errorData = await response.json();
-        // This fixes [object Object]
         if (typeof errorData.detail === 'string') {
           authError = errorData.detail;
         } else if (Array.isArray(errorData.detail) && errorData.detail[0] && errorData.detail[0].msg) {
@@ -96,7 +94,7 @@
         } else {
           authError = 'Failed to create account. Please check details.';
         }
-        isLoading = false; // Stop loading on error
+        isLoading = false; 
       }
     } catch (error) {
       console.error('Onboarding failed:', error);
@@ -125,16 +123,20 @@
       
       const aiData = await response.json();
 
-      // Store the history and welcome message
+     
       initialHistory = aiData.recent_conversations || [];
-      initialWelcomeMessage = {
-        id: 'init_reply',
-        text: aiData.reply || aiData.message || "Welcome back!", // Reads both "reply" and "message"
-        sender: 'ai',
-        reaction: null
-      };
+      const welcomeText = aiData.reply || aiData.message;
+      if (welcomeText && welcomeText !== "Loaded previous chat history") {
+        initialWelcomeMessage = {
+          id: 'init_reply',
+          text: welcomeText,
+          sender: 'ai',
+          reaction: null
+        };
+      } else {
+        initialWelcomeMessage = null; 
+      }
 
-      // NOW we switch pages
       startChat();
 
     } catch (error) {
