@@ -343,7 +343,6 @@
 </div>
  -->
 
-<!-- src/lib/components/ChatWindow.svelte -->
 <script>
   import { onMount, tick, createEventDispatcher } from 'svelte';
   import { availableReactions } from '$lib/constants/reactions.js';
@@ -483,61 +482,69 @@
 
 
   async function sendMessage() {
-    if (newMessage.trim() === '' || isAiTyping) return;
-    const userMessageText = newMessage;
-    const tempUserMessage = {
-      id: `temp_${Date.now()}`,
-      text: userMessageText,
-      sender: 'user',
-      reaction: null,
-      replyingTo: replyingToMessage ? {
-        text: replyingToMessage.text,
-        sender: replyingToMessage.sender === 'ai' ? friendName : 'You'
-      } : null
-    };
-    messages = [...messages, tempUserMessage];
-    newMessage = '';
-    replyingToMessage = null;
-    isAiTyping = true;
-    scrollBottom(); 
+  if (newMessage.trim() === '' || isAiTyping) return;
 
-    try {
-      const response = await fetch(`${apiBaseUrl}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: username,
-          message: userMessageText
-        })
-      });
+  const userMessageText = newMessage;
+  const tempUserMessage = {
+    id: `temp_${Date.now()}`,
+    text: userMessageText,
+    sender: 'user',
+    reaction: null,
+    replyingTo: replyingToMessage ? {
+      text: replyingToMessage.text,
+      sender: replyingToMessage.sender === 'ai' ? friendName : 'You'
+    } : null
+  };
 
-      if (response.ok) {
-        const aiData = await response.json();
-        const aiResponse = {
-          id: `ai_${Date.now()}`,
-          text: aiData.reply,
-          sender: 'ai',
-          reaction: null
-        };
-        messages = [...messages, aiResponse]; // Append AI response
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to get a response.');
-      }
-    } catch (error) {
-      console.error('Chat error:', error);
-      const errorResponse = {
-        id: `err_${Date.now()}`,
-        text: `Sorry, an error occurred: ${error.message}`,
+  messages = [...messages, tempUserMessage];
+  newMessage = '';
+  replyingToMessage = null;
+  isAiTyping = true;
+  scrollBottom();
+
+  try {
+    const token = localStorage.getItem('jwtToken'); // ⬅️ Get token
+
+    const response = await fetch(`${apiBaseUrl}/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`   // ⬅️ Add JWT here
+      },
+      body: JSON.stringify({
+        username: username,
+        message: userMessageText
+      })
+    });
+
+    if (response.ok) {
+      const aiData = await response.json();
+      const aiResponse = {
+        id: `ai_${Date.now()}`,
+        text: aiData.reply,
         sender: 'ai',
         reaction: null
       };
-      messages = [...messages, errorResponse]; 
-    } finally {
-      isAiTyping = false;
-      scrollBottom(); 
+      messages = [...messages, aiResponse];
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to get a response.');
     }
+  } catch (error) {
+    console.error('Chat error:', error);
+    const errorResponse = {
+      id: `err_${Date.now()}`,
+      text: `Sorry, an error occurred: ${error.message}`,
+      sender: 'ai',
+      reaction: null
+    };
+    messages = [...messages, errorResponse];
+  } finally {
+    isAiTyping = false;
+    scrollBottom();
   }
+}
+
 
   function handleDeleteChat() {
     isMenuOpen = false;
