@@ -26,8 +26,8 @@ steps:
 
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: 'my-azure-connection'  # replace with your service connection
+    azureSubscription: 'my-azure-connection'
     appType: 'webAppLinux'
-    appName: 'my-svelte-app'  # replace with your App Service name
+    appName: 'my-svelte-app'
     package: '$(Build.ArtifactStagingDirectory)/frontend.zip'
   displayName: 'Deploy Frontend'
