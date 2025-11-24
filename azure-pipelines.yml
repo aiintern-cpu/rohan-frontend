@@ -1,0 +1,33 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Use Node 18'
+
+- script: |
+    npm ci
+    npm run build
+  displayName: 'Install & Build Svelte'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: 'build'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/frontend.zip'
+    replaceExistingArchive: true
+  displayName: 'Zip Frontend Build'
+
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'my-azure-connection'  # replace with your service connection
+    appType: 'webAppLinux'
+    appName: 'my-svelte-app'  # replace with your App Service name
+    package: '$(Build.ArtifactStagingDirectory)/frontend.zip'
+  displayName: 'Deploy Frontend'
