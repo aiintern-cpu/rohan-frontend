@@ -1,5 +1,5 @@
 trigger:
-  - main
+- main
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -8,26 +8,15 @@ steps:
 - task: NodeTool@0
   inputs:
     versionSpec: '18.x'
-  displayName: 'Use Node 18'
+  displayName: "Use Node 18"
 
 - script: |
-    npm ci
+    npm install
     npm run build
-  displayName: 'Install & Build Svelte'
+  displayName: "Install & Build Svelte"
 
-- task: ArchiveFiles@2
+- task: PublishBuildArtifacts@1
   inputs:
-    rootFolderOrFile: 'build'
-    includeRootFolder: false
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/frontend.zip'
-    replaceExistingArchive: true
-  displayName: 'Zip Frontend Build'
-
-- task: AzureWebApp@1
-  inputs:
-    azureSubscription: 'my-azure-connection'
-    appType: 'webAppLinux'
-    appName: 'my-svelte-app'
-    package: '$(Build.ArtifactStagingDirectory)/frontend.zip'
-  displayName: 'Deploy Frontend'
+    PathtoPublish: 'build'
+    ArtifactName: 'frontend'
+    publishLocation: 'Container'
