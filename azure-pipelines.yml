@@ -1,0 +1,22 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: "Use Node 18"
+
+- script: |
+    npm install
+    npm run build
+  displayName: "Install & Build Svelte"
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'build'
+    ArtifactName: 'frontend'
+    publishLocation: 'Container'
