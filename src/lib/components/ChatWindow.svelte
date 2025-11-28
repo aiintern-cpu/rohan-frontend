@@ -414,65 +414,76 @@
 
 
   async function loadMoreHistory() {
-    if (isLoadingMore || allHistoryLoaded) return;
+  if (isLoadingMore || allHistoryLoaded) return;
 
-    isLoadingMore = true; 
-    console.log(`Attempting to load more history, offset: ${currentOffset}, limit: ${limit}`);
-    const oldScrollHeight = chatContainerEl.scrollHeight;
-    const oldScrollTop = chatContainerEl.scrollTop;
+  isLoadingMore = true; 
+  console.log(`Attempting to load more history, offset: ${currentOffset}, limit: ${limit}`);
+  const oldScrollHeight = chatContainerEl.scrollHeight;
+  const oldScrollTop = chatContainerEl.scrollTop;
 
-    try {
-      const params = new URLSearchParams({
-        username: username,
-        offset: currentOffset.toString(),
-        limit: limit.toString()
-      });
-      const historyUrl = `${apiBaseUrl}/history?${params.toString()}`;
+  try {
+    const token = localStorage.getItem("jwtToken");  // ✅ GET TOKEN HERE
 
-      const response = await fetch(historyUrl, { method: 'GET',  headers: {
+    const params = new URLSearchParams({
+      username: username,
+      offset: currentOffset.toString(),
+      limit: limit.toString()
+    });
+
+    const historyUrl = `${apiBaseUrl}/history?${params.toString()}`;
+
+    const response = await fetch(historyUrl, { 
+      method: 'GET',
+      headers: {
         'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true' 
-         } });
-
-      if (!response.ok) {
-        let errorDetail = `Status: ${response.status}`;
-        try { const errorData = await response.json(); errorDetail = errorData.detail || errorDetail; }
-        catch (e) {  }
-        console.error(`Failed to fetch older history: ${errorDetail}`); 
-        allHistoryLoaded = true; 
-        return; 
+        'Authorization': `Bearer ${token}`,     // ✅ ATTACH JWT HERE
+        'ngrok-skip-browser-warning': 'true'
       }
+    });
 
-      const historyData = await response.json();
-      const olderConversations = historyData.conversations || []; 
-      console.log(`Received ${olderConversations.length} older messages.`);
+    if (!response.ok) {
+      let errorDetail = `Status: ${response.status}`;
+      try { 
+        const errorData = await response.json(); 
+        errorDetail = errorData.detail || errorDetail; 
+      } catch (e) {}
+      console.error(`Failed to fetch older history: ${errorDetail}`);
+      allHistoryLoaded = true;
+      return;
+    }
 
-      if (olderConversations.length > 0) {
-        const formattedOlderMessages = formatHistory(olderConversations);
-        messages = [...formattedOlderMessages, ...messages];
-        currentOffset += olderConversations.length;
+    const historyData = await response.json();
+    const olderConversations = historyData.conversations || [];
+    console.log(`Received ${olderConversations.length} older messages.`);
 
-        if (olderConversations.length < limit) {
-          console.log("All history loaded.");
-          allHistoryLoaded = true;
-        }
-        await tick();
-        const newScrollHeight = chatContainerEl.scrollHeight;
-        const heightDifference = newScrollHeight - oldScrollHeight;
-        chatContainerEl.scrollTop = oldScrollTop + heightDifference;
+    if (olderConversations.length > 0) {
+      const formattedOlderMessages = formatHistory(olderConversations);
+      messages = [...formattedOlderMessages, ...messages];
+      currentOffset += olderConversations.length;
 
-      } else {
-        console.log("No more older messages found. All history loaded.");
+      if (olderConversations.length < limit) {
+        console.log("All history loaded.");
         allHistoryLoaded = true;
       }
 
-    } catch (error) {
-      console.error('Unexpected error loading more history:', error);
-      allHistoryLoaded = true; 
-    } finally {
-      isLoadingMore = false; 
+      await tick();
+      const newScrollHeight = chatContainerEl.scrollHeight;
+      const heightDifference = newScrollHeight - oldScrollHeight;
+      chatContainerEl.scrollTop = oldScrollTop + heightDifference;
+
+    } else {
+      console.log("No more older messages found. All history loaded.");
+      allHistoryLoaded = true;
     }
+
+  } catch (error) {
+    console.error('Unexpected error loading more history:', error);
+    allHistoryLoaded = true;
+  } finally {
+    isLoadingMore = false;
   }
+}
+
 
   function handleScroll() {
     if (chatContainerEl && chatContainerEl.scrollTop < scrollThreshold) {
